@@ -1,0 +1,39 @@
+body {
+    background-color: black;
+}
+
+a {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    border: 2px solid white;
+    padding: 8px 8px;
+    background-color: black;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-size: 30px;
+    right: 15px;
+}
+a:visited {
+    color: white;
+}
+
+.mainlinks {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.title {
+    text-align: center;
+    font-family:'Courier New', Courier, monospace;
+    color: white;
+    font-size: 50px;
+    margin-top: 20%;
+}
+
+.aboutme {
+    text-align: center;
+    font-family:'Courier New', Courier, monospace;
+    color: white;
+    font-size: 30px;
+    margin-top: 5%;
+}
