@@ -8,6 +8,12 @@ body {
     font-size: 30px;
 }
 
+p {
+    font-family:'Courier New', Courier, monospace;
+    color: white;
+    font-size: 30px;
+}
+
 a {
     color: white;
     font-family: 'Courier New', Courier, monospace;
@@ -43,3 +49,4 @@ a:visited {
     font-size: 30px;
     margin-top: 5%;
 }
+
