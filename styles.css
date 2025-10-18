@@ -2,6 +2,12 @@ body {
     background-color: black;
 }
 
+.text {
+    font-family:'Courier New', Courier, monospace;
+    color: white;
+    font-size: 30px;
+}
+
 a {
     color: white;
     font-family: 'Courier New', Courier, monospace;
