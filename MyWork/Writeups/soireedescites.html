@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+    <head>
+        <title>Sam's portfolio</title>
+        <link rel="stylesheet" href="../../styles.css" />
+    </head>
+    <body>
+        <div class="text">
+            <p>Ceci est un writeup du lab OpenWire, entièrement en français.
+Il consiste en une analyse d'une vulnérabilité java qui permet une exécution de code à distance.
+            </p>
+            <strong>Question 1 : By identifying the C2 IP, we can block traffic to and from this IP, helping to contain the breach and prevent further data exfiltration or command execution. Can you provide the IP of the C2 server that communicated with our server? </strong>
+            <p>
+	Tout d'abord, j'ai regardé les paquets HTTP. J'ai remarqué qu'une IP s'était connectée à une autre, faisant une requête GET pour un fichier XML : invoice.xml. J'ai donc regardé le fichier dans la réponse, et elle contenait une IP : 128.199.52.72.
+            </p>
+            <img src="Capture d'écran 2025-10-18 175917.png">
+            <p>
+Cette IP n'a pas marché pour la réponse à la question. Cependant, elle nous servira plus tard.
+            </p>
+            <p>J'ai ensuite vu que la machine échangeait de nombreux paquets avec une autre IP : 146.190.21.92. Cette fois-ci, c'était la bonne réponse.</p>
+            <img src="Capture d'écran 2025-10-18 180554.png">
+            <strong>Réponse : 146.190.21.92</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 2 : Initial entry points are critical to trace the attack vector back. What is the port number of the service the adversary exploited?</strong>
+            <p>
+                Répondre à cette question était assez compliqué. J'ai d'abord regardé les ports par lesquels le fichier XML était téléchargé : d'abord 49750, puis 49764. Aucun n'était la bonne réponse. Un peu dépité, j'ai bloqué sur la question, puis j'ai eu l'idée de regarder ailleurs. J'ai donc regardé les paquets impliquant l'IP victime, 134.209.197.3. Et là, surprise, je vois le protocole OpenWire. Cela m'avait immédiatement sauté aux yeux parce que c'était simplement le nom du lab. Je me suis donc dit que ça en valait la peine de vérifier.
+            </p>
+            <p>J'ai remarqué que l'IP a d'abord fait une requête après avoir établi la connection, puis une réponse malformée, contenait l'URI menant au fichier XML malveillant. J'ai immédiatement su que c'était de là que l'accès initial avait commencé. J'ai donc regardé le port de la machine victime utilisé lors de l'échange de ces paquets : 61616. C'était la bonne réponse.</p>
+            <img src="Capture d'écran 2025-10-18 181729.png">
+            <strong>Réponse : 61616</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 3 : Following up on the previous question, what is the name of the service found to be vulnerable?</strong>
+            <p>C'est probablement la question la plus simple du lab. Une recherche du service lié au port 61616 sur Google et c'était bon. Un service est apparu : ActiveMQ. Cependant, le format de la réponse attendant deux mots. Le deuxième collait bien puisque sa dernière lettre était un Q majuscule. Mais il fallait trouver le premier mot.</p>
+            <p>En regardant un peu partout, j'ai remarqué quelque chose : Apache ActiveMQ. Sachant que la première lettre du premier mot était un A, d'après le format attendu, j'ai tout de suite compris que c'était ça.
+Apache ActiveMQ avait bien fonctionné.</p>
+            <strong>Réponse : Apache ActiveMQ</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 4 : The attacker's infrastructure often involves multiple components. What is the IP of the second C2 server?</strong>
+            <p>Vous voyez l'IP que j'avais trouvée dans invoice.xml ? Et bien, j'ai immédiatement compris que c'était celle-ci. Une IP différente de celle du serveur C2 utilisé au départ, qui est pourtant envoyée à la machine victime. Ni une ni deux, j'ai tout de suite su. Et c'était la bonne réponse.</p>
+            <img src="Capture d'écran 2025-10-18 175917.png">
+            <strong>Réponse : 128.199.52.72</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 5 : Attackers usually leave traces on the disk. What is the name of the reverse shell executable dropped on the server?</strong>
+            <p>Oui, pour ceux qui comme moi auraient fait la même erreur, moi aussi j'ai tenté invoice. C'était assez tentant. Maintenant ce n'était pas la bonne réponse. Il fallait donc chercher ailleurs. J'ai regardé la liste des fichiers qui ont été échangés. Un m'a attiré l'attention : docker. Je l'avais déjà remarqué auparavant. En regardant ce qu'il avait dedans, il y avait au tout début, une signature. Décodé en ascii cela donnait ELF, et il se trouve que ELF est l'extension de fichier des exécutables Linux. J'ai donc compris que c'était lui, l'exécutable que l'on cherchait. Et c'était la bonne réponse.</p>
+            <img src="Capture d'écran 2025-10-18 183402.png">
+            <strong>Réponse : docker</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 6 : What Java class was invoked by the XML file to run the exploit?</strong>
+            <p>Bon, j'ai changé d'avis, la question 3 n'est pas la plus simple, c'est celle-ci. Il suffisait juste de regarder dans le fichier XML la libraire Java qui avait été appelée. Ce qui m'avait fait savoir, d'ailleurs, que le invoice.xml était malveillant, c'est qu'il y avait une classe Java dedans, signe qu'il était lié à Java. L'attaque était justement autour d'une faille liée à Java.</p>
+            <p>C'est noté au début du fichier. Regardez le paquet de réponse lors de la requête GET /invoice.xml, vous le trouverez vite.</p>
+            <img src="Capture d'écran 2025-10-18 183936.png">
+            <strong>Réponse : java.lang.ProcessBuilder</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>Question 7 : To better understand the specific security flaw exploited, can you identify the CVE identifier associated with this vulnerability?</strong>
+            <p>Vu que nous étions sur une vulnérabilité d'exécution de code à distance sur Apache ActiveMQ, il est évident qu'il fallait chercher "apache activemq vulnerability rce java". Le premier résultat, CVE-2023-46604, était le bon.</p>
+            <strong>Réponse : CVE-2023-46604</strong>
+        </div>
+        <hr>
+        <div class="text">
+            <strong>The vendor addressed the vulnerability by adding a validation step to ensure that only valid Throwable classes can be instantiated, preventing exploitation. In which Java class and method was this validation step added?</strong>
+            <p>Bon, ici, il y a un lien GitHub sur lequel on peut voir l'ajout d'une étape de vérification. Elle consiste à verifier si la classe est Throwable, et si elle ne l'est pas, une exception est retournée. Ici, j'avais malcompris la question : je pensais qu'il fallait que je donne le package complet de là où il y a la méthode qui enclenche la vérification, et la méthode. Ce n'était pas le cas. Il fallait que je donne la classe où la méthode de vérification a été implémentée, puis que je donne la méthode où le processus de vérification a été implémenté : BaseDataStreamMarshaller.createThrowable, et c'est là que tout a fonctionné.</p>
+            <img src="Capture d'écran 2025-10-18 184306.png">
+            <strong>Réponse : BaseDataStreamMarshaller.createThrowable</strong>
+        </div>
+        <div class="text">
+            <p>Merci d'avoir lu ce writeup ^^</p>
+            <p>Même si j'ai fait beaucoup d'erreurs, parfois absurdes, j'ai quand-même trouvé le processus de résolution du lab très fluide : je n'ai pas sauté une seule question, et je n'ai pas eu de blocage particulier, sauf très brièvement au début.</p>
+        </div>
+    </body>
