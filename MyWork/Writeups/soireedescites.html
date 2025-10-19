@@ -33,7 +33,7 @@ Cette IP n'a pas marché pour la réponse à la question. Cependant, elle nous s
         <hr>
         <div class="text">
             <strong>Question 3 : Following up on the previous question, what is the name of the service found to be vulnerable?</strong>
-            <p>C'est probablement la question la plus simple du lab. Une recherche du service lié au port 61616 sur Google et c'était bon. Un service est apparu : ActiveMQ. Cependant, le format de la réponse attendant deux mots. Le deuxième collait bien puisque sa dernière lettre était un Q majuscule. Mais il fallait trouver le premier mot.</p>
+            <p>C'est probablement la question la plus simple du lab. Une recherche du service lié au port 61616 sur Google et c'était bon. Un service est apparu : ActiveMQ. Cependant, le format de la réponse attendait deux mots. Le deuxième collait bien puisque sa dernière lettre était un Q majuscule. Mais il fallait trouver le premier mot.</p>
             <p>En regardant un peu partout, j'ai remarqué quelque chose : Apache ActiveMQ. Sachant que la première lettre du premier mot était un A, d'après le format attendu, j'ai tout de suite compris que c'était ça.
 Apache ActiveMQ avait bien fonctionné.</p>
             <strong>Réponse : Apache ActiveMQ</strong>
@@ -55,7 +55,7 @@ Apache ActiveMQ avait bien fonctionné.</p>
         <hr>
         <div class="text">
             <strong>Question 6 : What Java class was invoked by the XML file to run the exploit?</strong>
-            <p>Bon, j'ai changé d'avis, la question 3 n'est pas la plus simple, c'est celle-ci. Il suffisait juste de regarder dans le fichier XML la libraire Java qui avait été appelée. Ce qui m'avait fait savoir, d'ailleurs, que le invoice.xml était malveillant, c'est qu'il y avait une classe Java dedans, signe qu'il était lié à Java. L'attaque était justement autour d'une faille liée à Java.</p>
+            <p>Bon, j'ai changé d'avis, la question 3 n'est pas la plus simple, c'est celle-ci. Il suffisait juste de regarder dans le fichier XML la librairie Java qui avait été appelée. Ce qui m'avait fait savoir, d'ailleurs, que le invoice.xml était malveillant, c'est qu'il y avait une classe Java dedans, signe qu'il était lié à Java. L'attaque était justement autour d'une faille liée à Java.</p>
             <p>C'est noté au début du fichier. Regardez le paquet de réponse lors de la requête GET /invoice.xml, vous le trouverez vite.</p>
             <img src="Capture d'écran 2025-10-18 183936.png">
             <strong>Réponse : java.lang.ProcessBuilder</strong>
@@ -77,4 +77,5 @@ Apache ActiveMQ avait bien fonctionné.</p>
             <p>Merci d'avoir lu ce writeup ^^</p>
             <p>Même si j'ai fait beaucoup d'erreurs, parfois absurdes, j'ai quand-même trouvé le processus de résolution du lab très fluide : je n'ai pas sauté une seule question, et je n'ai pas eu de blocage particulier, sauf très brièvement au début.</p>
         </div>
+
     </body>
